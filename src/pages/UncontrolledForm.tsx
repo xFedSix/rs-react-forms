@@ -1,5 +1,5 @@
 import { useRef, FormEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
 import { setUncontrolledFormData } from '../store/formSlice';
@@ -74,6 +74,7 @@ const UncontrolledForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isFormDirty, setIsFormDirty] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const validatePassword = (password: string): string => {
     const hasNumber = /\d/.test(password);
@@ -119,6 +120,7 @@ const UncontrolledForm = () => {
               agreement: formData.get('agreement') === 'on'
             };
             dispatch(setUncontrolledFormData(formDataWithAvatar));
+            navigate('/', { state: { newData: true } });
           };
           reader.readAsDataURL(file);
         }
