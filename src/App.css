@@ -78,18 +78,23 @@ button {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.form-group input.error-input {
+  border-color: #ff0000;
+  background-color: #fff0f0;
+}
+
+.form-group input.error-input:focus {
+  outline-color: #ff0000;
+  box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
 }
 
 .gender-radio-group {
   display: flex;
-  flex-direction: row;
   gap: 20px;
-}
-
-.radio-group div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  flex-direction: row;
 }
 
 .checkbox-group {
@@ -100,9 +105,16 @@ button {
 }
 
 .error {
-  color: red;
+  color: #ff0000;
   font-size: 0.8em;
   margin-top: 5px;
+  display: block;
+}
+
+.password-strength {
+  font-size: 0.8em;
+  margin-top: 5px;
+  display: block;
 }
 
 button {
@@ -113,29 +125,25 @@ button {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 20px;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
+button:hover:not(:disabled) {
   background-color: #45a049;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .back-link {
   display: block;
   margin-top: 20px;
-  color: #666;
+  color: #4caf50;
   text-decoration: none;
 }
 
 .back-link:hover {
   text-decoration: underline;
-}
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  font-size: 0.8em;
-  margin-top: 5px;
 }

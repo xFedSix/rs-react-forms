@@ -1,4 +1,4 @@
-import { useRef, FormEvent, useState, useEffect } from 'react';
+import { useRef, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
@@ -10,7 +10,10 @@ const schema = yup.object().shape({
   name: yup
     .string()
     .required('Name is required')
-    .matches(/^[A-Z][a-zA-Z]*$/, 'First letter should be uppercase'),
+    .matches(
+      /^[A-Z][a-zA-Z]*$/,
+      'Should be in Latin alphabet and First letter should be uppercase'
+    ),
 
   age: yup
     .number()
@@ -69,7 +72,7 @@ const schema = yup.object().shape({
 const UncontrolledForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
   const dispatch = useDispatch();
 
   const validatePassword = (password: string): string => {
@@ -92,7 +95,6 @@ const UncontrolledForm = () => {
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const data = Object.fromEntries(formData);
-
       data.agreement = (formData.get('agreement') ===
         'on') as unknown as FormDataEntryValue;
 
@@ -114,16 +116,14 @@ const UncontrolledForm = () => {
               confirmPassword: data.confirmPassword as string,
               gender: data.gender as string,
               country: data.country as string,
-              agreement: data.agreement === 'on'
+              agreement: formData.get('agreement') === 'on'
             };
             dispatch(setUncontrolledFormData(formDataWithAvatar));
-            console.log(formDataWithAvatar);
           };
           reader.readAsDataURL(file);
         }
 
         setErrors({});
-        setIsFormValid(true);
       } catch (err) {
         if (err instanceof yup.ValidationError) {
           const validationErrors = err.inner.reduce(
@@ -137,28 +137,39 @@ const UncontrolledForm = () => {
           );
 
           setErrors(validationErrors);
-          setIsFormValid(false);
 
-          Object.entries(validationErrors).forEach(([field, message]) => {
-            const element = formRef.current?.querySelector(`[name="${field}"]`);
+          const firstError = err.inner[0];
+          if (firstError && firstError.path) {
+            const element = formRef.current?.querySelector(
+              `[name="${firstError.path}"]`
+            );
             if (element) {
-              (element as HTMLInputElement).setCustomValidity(message);
+              (element as HTMLInputElement).setCustomValidity(
+                firstError.message
+              );
               (element as HTMLInputElement).reportValidity();
             }
-          });
+          }
         }
       }
     }
   };
 
-  useEffect(() => {
-    setIsFormValid(Object.keys(errors).length === 0);
-  }, [errors]);
+  const handleChange = () => {
+    if (!isFormDirty) {
+      setIsFormDirty(true);
+    }
+  };
 
   return (
     <div className="form-container">
       <h1>Uncontrolled Form</h1>
-      <form ref={formRef} onSubmit={handleSubmit} noValidate>
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        noValidate
+      >
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" required />
@@ -255,7 +266,7 @@ const UncontrolledForm = () => {
           )}
         </div>
 
-        <button type="submit" disabled={!isFormValid}>
+        <button type="submit" disabled={!isFormDirty}>
           Submit
         </button>
       </form>
