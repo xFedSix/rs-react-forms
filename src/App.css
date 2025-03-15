@@ -129,3 +129,13 @@ button:hover {
 .back-link:hover {
   text-decoration: underline;
 }
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  font-size: 0.8em;
+  margin-top: 5px;
+}

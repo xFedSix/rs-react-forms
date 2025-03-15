@@ -1,4 +1,4 @@
-import { useRef, FormEvent } from 'react';
+import { useRef, FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 
@@ -66,6 +66,8 @@ const schema = yup.object().shape({
 
 const UncontrolledForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const validatePassword = (password: string): string => {
     const hasNumber = /\d/.test(password);
@@ -103,9 +105,12 @@ const UncontrolledForm = () => {
           };
           reader.readAsDataURL(file);
         }
+
+        setErrors({});
+        setIsFormValid(true);
       } catch (err) {
         if (err instanceof yup.ValidationError) {
-          const errors = err.inner.reduce(
+          const validationErrors = err.inner.reduce(
             (acc, error) => {
               if (error.path) {
                 acc[error.path] = error.message;
@@ -115,7 +120,10 @@ const UncontrolledForm = () => {
             {} as Record<string, string>
           );
 
-          Object.entries(errors).forEach(([field, message]) => {
+          setErrors(validationErrors);
+          setIsFormValid(false);
+
+          Object.entries(validationErrors).forEach(([field, message]) => {
             const element = formRef.current?.querySelector(`[name="${field}"]`);
             if (element) {
               (element as HTMLInputElement).setCustomValidity(message);
@@ -127,6 +135,10 @@ const UncontrolledForm = () => {
     }
   };
 
+  useEffect(() => {
+    setIsFormValid(Object.keys(errors).length === 0);
+  }, [errors]);
+
   return (
     <div className="form-container">
       <h1>Uncontrolled Form</h1>
@@ -134,16 +146,19 @@ const UncontrolledForm = () => {
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" required />
+          {errors.name && <span className="error">{errors.name}</span>}
         </div>
 
         <div className="form-group">
           <label htmlFor="age">Age:</label>
           <input type="number" id="age" name="age" min="0" required />
+          {errors.age && <span className="error">{errors.age}</span>}
         </div>
 
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input type="email" id="email" name="email" required />
+          {errors.email && <span className="error">{errors.email}</span>}
         </div>
 
         <div className="form-group">
@@ -158,6 +173,7 @@ const UncontrolledForm = () => {
               e.target.title = `Password strength: ${strength}`;
             }}
           />
+          {errors.password && <span className="error">{errors.password}</span>}
         </div>
 
         <div className="form-group">
@@ -168,16 +184,20 @@ const UncontrolledForm = () => {
             name="confirmPassword"
             required
           />
+          {errors.confirmPassword && (
+            <span className="error">{errors.confirmPassword}</span>
+          )}
         </div>
 
         <div className="form-group">
           <label>Gender:</label>
-          <div className="radio-group">
+          <div className="gender-radio-group">
             <input type="radio" id="male" name="gender" value="male" required />
             <label htmlFor="male">Male</label>
             <input type="radio" id="female" name="gender" value="female" />
             <label htmlFor="female">Female</label>
           </div>
+          {errors.gender && <span className="error">{errors.gender}</span>}
         </div>
 
         <div className="form-group">
@@ -189,6 +209,7 @@ const UncontrolledForm = () => {
             accept=".jpg,.jpeg,.png"
             required
           />
+          {errors.avatar && <span className="error">{errors.avatar}</span>}
         </div>
 
         <div className="form-group">
@@ -205,6 +226,7 @@ const UncontrolledForm = () => {
               <option key={country} value={country} />
             ))}
           </datalist>
+          {errors.country && <span className="error">{errors.country}</span>}
         </div>
 
         <div className="form-group checkbox-group">
@@ -212,9 +234,14 @@ const UncontrolledForm = () => {
           <label htmlFor="agreement">
             I accept the terms of the user agreement
           </label>
+          {errors.agreement && (
+            <span className="error">{errors.agreement}</span>
+          )}
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!isFormValid}>
+          Submit
+        </button>
       </form>
       <Link to="/">Return to main page</Link>
     </div>

@@ -85,9 +85,10 @@ const HookForm: React.FC = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors, isValid }
   } = useForm<FormInputs>({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    mode: 'onChange'
   });
 
   const password = watch('password');
@@ -235,7 +236,9 @@ const HookForm: React.FC = () => {
           )}
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!isValid}>
+          Submit
+        </button>
       </form>
       <Link to="/" className="back-link">
         Back to main page
