@@ -15,7 +15,7 @@ const MainPage: React.FC = () => {
       setIsNewData(true);
       const timer = setTimeout(() => {
         setIsNewData(false);
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [location.state]);
@@ -23,7 +23,6 @@ const MainPage: React.FC = () => {
   return (
     <div className="main-page">
       <h1>Main Page</h1>
-
       <div className={`data-tile ${isNewData ? 'new-data' : ''}`}>
         <ul>
           <li>

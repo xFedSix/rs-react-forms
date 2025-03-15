@@ -73,6 +73,7 @@ const UncontrolledForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isFormDirty, setIsFormDirty] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<string>('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -199,10 +200,15 @@ const UncontrolledForm = () => {
             required
             onChange={(e) => {
               const strength = validatePassword(e.target.value);
+              setPasswordStrength(strength);
               e.target.title = `Password strength: ${strength}`;
             }}
           />
           {errors.password && <span className="error">{errors.password}</span>}
+          <span className="password-strength">
+            Strength: {passwordStrength}
+          </span>{' '}
+          {}
         </div>
 
         <div className="form-group">

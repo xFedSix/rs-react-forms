@@ -119,9 +119,20 @@ const HookForm: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        const formDataWithAvatar = { ...data, avatar: base64String };
+        const formDataWithAvatar = {
+          name: data.name,
+          age: data.age,
+          email: data.email,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+          gender: data.gender,
+          avatar: base64String,
+          country: data.country,
+          agreement: data.agreement
+        };
         dispatch(setHookFormData(formDataWithAvatar));
         navigate('/', { state: { newData: true } });
+        console.log({ ...formDataWithAvatar });
       };
       reader.readAsDataURL(data.avatar[0]);
     }
