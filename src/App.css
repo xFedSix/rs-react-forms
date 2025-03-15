@@ -147,3 +147,25 @@ button:disabled {
 .back-link:hover {
   text-decoration: underline;
 }
+.main-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.data-tile {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.data-tile.new-data {
+  background-color: #e0ffe0;
+}
+.li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

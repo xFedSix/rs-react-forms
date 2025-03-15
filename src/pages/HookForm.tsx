@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -24,10 +24,7 @@ const schema = yup.object().shape({
   name: yup
     .string()
     .required('Name is required')
-    .matches(
-      /^[A-Z][a-zA-Z]*$/,
-      'Should be in Latin alphabet and First letter should be uppercase'
-    ),
+    .matches(/^[A-Z][a-zA-Z]*$/, 'First letter should be uppercase'),
 
   age: yup
     .number()
@@ -45,7 +42,7 @@ const schema = yup.object().shape({
     .required('Password is required')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?:{}|<>]{8,}$/,
-      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+      'Password must contain 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character'
     ),
 
   confirmPassword: yup
@@ -88,6 +85,7 @@ const schema = yup.object().shape({
 
 const HookForm: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -123,6 +121,7 @@ const HookForm: React.FC = () => {
         const base64String = reader.result as string;
         const formDataWithAvatar = { ...data, avatar: base64String };
         dispatch(setHookFormData(formDataWithAvatar));
+        navigate('/', { state: { newData: true } });
       };
       reader.readAsDataURL(data.avatar[0]);
     }
