@@ -1,6 +1,8 @@
 import { useRef, FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import * as yup from 'yup';
+import { setUncontrolledFormData } from '../store/formSlice';
 
 const COUNTRIES = ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'];
 
@@ -68,6 +70,7 @@ const UncontrolledForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const dispatch = useDispatch();
 
   const validatePassword = (password: string): string => {
     const hasNumber = /\d/.test(password);
@@ -101,7 +104,20 @@ const UncontrolledForm = () => {
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64String = reader.result as string;
-            console.log({ ...data, avatar: base64String });
+            const formDataWithAvatar = {
+              ...data,
+              avatar: base64String,
+              name: data.name as string,
+              age: Number(data.age),
+              email: data.email as string,
+              password: data.password as string,
+              confirmPassword: data.confirmPassword as string,
+              gender: data.gender as string,
+              country: data.country as string,
+              agreement: data.agreement === 'on'
+            };
+            dispatch(setUncontrolledFormData(formDataWithAvatar));
+            console.log(formDataWithAvatar);
           };
           reader.readAsDataURL(file);
         }

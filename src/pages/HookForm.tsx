@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { setHookFormData } from '../store/formSlice';
 
 const COUNTRIES = ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'];
 
@@ -81,6 +83,7 @@ const schema = yup.object().shape({
 });
 
 const HookForm: React.FC = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -112,7 +115,8 @@ const HookForm: React.FC = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        // Здесь можно отправить base64String в Redux store
+        const formDataWithAvatar = { ...data, avatar: base64String };
+        dispatch(setHookFormData(formDataWithAvatar));
         console.log({ ...data, avatar: base64String });
       };
       reader.readAsDataURL(data.avatar[0]);
