@@ -131,8 +131,7 @@ const HookForm: React.FC = () => {
           agreement: data.agreement
         };
         dispatch(setHookFormData(formDataWithAvatar));
-        navigate('/', { state: { newData: true } });
-        console.log({ ...formDataWithAvatar });
+        navigate('/', { state: { newDataSource: 'hook' } });
       };
       reader.readAsDataURL(data.avatar[0]);
     }

@@ -3,27 +3,42 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { Link, useLocation } from 'react-router-dom';
 
+type NewDataSource = 'uncontrolled' | 'hook';
+
+interface LocationState {
+  newDataSource?: NewDataSource;
+}
+
 const MainPage: React.FC = () => {
   const { uncontrolledFormData, hookFormData } = useSelector(
     (state: RootState) => state.avatar
   );
   const location = useLocation();
-  const [isNewData, setIsNewData] = useState(false);
+  const state = (location.state as LocationState) || {};
+
+  const [isNewUncontrolledData, setNewUncontrolledData] = useState(false);
+  const [isNewHookData, setNewHookData] = useState(false);
 
   useEffect(() => {
-    if (location.state?.newData) {
-      setIsNewData(true);
+    if (state.newDataSource === 'uncontrolled') {
+      setNewUncontrolledData(true);
       const timer = setTimeout(() => {
-        setIsNewData(false);
+        setNewUncontrolledData(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else if (state.newDataSource === 'hook') {
+      setNewHookData(true);
+      const timer = setTimeout(() => {
+        setNewHookData(false);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [location.state]);
+  }, [state.newDataSource]);
 
   return (
     <div className="main-page">
       <h1>Main Page</h1>
-      <div className={`data-tile ${isNewData ? 'new-data' : ''}`}>
+      <div className={`data-tile ${isNewUncontrolledData ? 'new-data' : ''}`}>
         <ul>
           <li>
             <Link to="/uncontrolled">Uncontrolled Form</Link>
@@ -36,7 +51,7 @@ const MainPage: React.FC = () => {
           <p>No data</p>
         )}
       </div>
-      <div className={`data-tile ${isNewData ? 'new-data' : ''}`}>
+      <div className={`data-tile ${isNewHookData ? 'new-data' : ''}`}>
         <ul>
           <li>
             <Link to="/hook-form">React Hook Form</Link>

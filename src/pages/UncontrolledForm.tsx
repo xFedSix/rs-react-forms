@@ -121,7 +121,7 @@ const UncontrolledForm = () => {
               agreement: formData.get('agreement') === 'on'
             };
             dispatch(setUncontrolledFormData(formDataWithAvatar));
-            navigate('/', { state: { newData: true } });
+            navigate('/', { state: { newDataSource: 'uncontrolled' } });
           };
           reader.readAsDataURL(file);
         }
@@ -227,10 +227,20 @@ const UncontrolledForm = () => {
         <div className="form-group">
           <label>Gender:</label>
           <div className="gender-radio-group">
-            <input type="radio" id="male" name="gender" value="male" required />
-            <label htmlFor="male">Male</label>
-            <input type="radio" id="female" name="gender" value="female" />
-            <label htmlFor="female">Female</label>
+            <div>
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+                value="male"
+                required
+              />
+              <label htmlFor="male">Male</label>
+            </div>
+            <div>
+              <input type="radio" id="female" name="gender" value="female" />
+              <label htmlFor="female">Female</label>
+            </div>
           </div>
           {errors.gender && <span className="error">{errors.gender}</span>}
         </div>

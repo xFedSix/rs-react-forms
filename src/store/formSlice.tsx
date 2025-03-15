@@ -5,6 +5,7 @@ interface FormData {
   age: number;
   email: string;
   password: string;
+  confirmPassword: string;
   gender: string;
   avatar: string;
   country: string;
