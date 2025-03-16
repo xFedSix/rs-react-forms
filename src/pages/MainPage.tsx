@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { Link, useLocation } from 'react-router-dom';
+import { FormData } from '../store/formSlice';
 
 type NewDataSource = 'uncontrolled' | 'hook';
 
@@ -45,8 +46,15 @@ const MainPage: React.FC = () => {
           </li>
         </ul>
         <h2>Uncontrolled Form Data</h2>
-        {uncontrolledFormData ? (
-          <pre>{JSON.stringify(uncontrolledFormData, null, 2)}</pre>
+        {uncontrolledFormData && uncontrolledFormData.length > 0 ? (
+          uncontrolledFormData.map((data: FormData, index: number) => {
+            const isNew = index === 0 && isNewUncontrolledData;
+            return (
+              <pre key={index} className={isNew ? 'new-data' : ''}>
+                {JSON.stringify(data, null, 2)}
+              </pre>
+            );
+          })
         ) : (
           <p>No data</p>
         )}
@@ -58,8 +66,15 @@ const MainPage: React.FC = () => {
           </li>
         </ul>
         <h2>Hook Form Data</h2>
-        {hookFormData ? (
-          <pre>{JSON.stringify(hookFormData, null, 2)}</pre>
+        {hookFormData && hookFormData.length > 0 ? (
+          hookFormData.map((data: FormData, index: number) => {
+            const isNew = index === 0 && isNewHookData;
+            return (
+              <pre key={index} className={isNew ? 'new-data' : ''}>
+                {JSON.stringify(data, null, 2)}
+              </pre>
+            );
+          })
         ) : (
           <p>No data</p>
         )}

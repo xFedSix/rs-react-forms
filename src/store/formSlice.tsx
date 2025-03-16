@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface FormData {
+export interface FormData {
   name: string;
   age: number;
   email: string;
@@ -13,8 +13,8 @@ interface FormData {
 }
 
 interface FormState {
-  uncontrolledFormData: FormData | null;
-  hookFormData: FormData | null;
+  uncontrolledFormData: FormData[] | null;
+  hookFormData: FormData[] | null;
 }
 
 const initialState: FormState = {
@@ -27,10 +27,16 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setUncontrolledFormData: (state, action: PayloadAction<FormData>) => {
-      state.uncontrolledFormData = action.payload;
+      if (state.uncontrolledFormData === null) {
+        state.uncontrolledFormData = [];
+      }
+      state.uncontrolledFormData.unshift(action.payload);
     },
     setHookFormData: (state, action: PayloadAction<FormData>) => {
-      state.hookFormData = action.payload;
+      if (state.hookFormData === null) {
+        state.hookFormData = [];
+      }
+      state.hookFormData.unshift(action.payload);
     }
   }
 });

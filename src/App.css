@@ -151,6 +151,7 @@ button:disabled {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  overflow: hidden;
 }
 
 .data-tile {
@@ -159,6 +160,8 @@ button:disabled {
   margin-bottom: 20px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
+  overflow-y: auto;
+  max-height: 500px;
 }
 
 .data-tile.new-data {
